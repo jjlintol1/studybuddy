@@ -57,7 +57,7 @@ const LeftSidebar = () => {
       <SideBarContent />
 
       <div className="flex flex-col gap-3">
-        <Link href="/sign-in">
+        <Link href="/login">
           <Button className="small-medium btn-secondary w-full rounded-lg px-4 py-3">
             <Image
               src="/assets/icons/account.svg"
@@ -66,19 +66,7 @@ const LeftSidebar = () => {
               height={20}
               className="invert-colors lg:hidden"
             />
-            <span className="invert-0 dark:invert max-lg:hidden">Log In</span>
-          </Button>
-        </Link>
-        <Link href="/sign-up">
-          <Button className="small-medium light-border-2 text-dark400_light900 btn-tertiary w-full rounded-lg px-4 py-3 shadow-none">
-            <Image
-              src="/assets/icons/sign-up.svg"
-              alt="sign up"
-              width={20}
-              height={20}
-              className="invert-colors lg:hidden"
-            />
-            <span className="invert-0 max-lg:hidden">Sign Up</span>
+            <span className="invert-0 dark:invert max-lg:hidden">Logout</span>
           </Button>
         </Link>
       </div>

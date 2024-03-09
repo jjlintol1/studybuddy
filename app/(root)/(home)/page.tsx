@@ -1,6 +1,8 @@
 import GenerateSetLink from "@/components/home/GenerateSetLink";
 import StudySetCarousel from "@/components/shared/carousel/StudySetCarousel";
 import UserCarousel from "@/components/shared/carousel/UserCarousel";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 import React from "react";
 
@@ -76,7 +78,17 @@ const dummyUsers = [
   },
 ];
 
-const HomePage = () => {
+const HomePage = async () => {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/login");
+  }
+
   return (
     <>
       <StudySetCarousel title="Your Sets" sets={dummySets} isTop />
