@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import CustomTextArea from '../formcomponents/customtextarea';
+import CustomTextArea from '../formcomponents/CustomTextArea';
 import CustomFileInput from '../formcomponents/CustomFileInput';
 
 const CreateSet = () => {
