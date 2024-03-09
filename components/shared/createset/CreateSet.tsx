@@ -1,13 +1,10 @@
-'use client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { useState } from 'react';
+import CustomTextArea from '../formcomponents/customtextarea';
+import CustomFileInput from '../formcomponents/CustomFileInput';
 
 const CreateSet = () => {
-  const [notes, setNotes] = useState<string>('');
 
   return (
     <Tabs defaultValue="paste" className="w-full flex flex-col justify-center">
@@ -21,18 +18,11 @@ const CreateSet = () => {
       </TabsList>
       <TabsContent value="paste">
         <Card className="py-5 mb-6 text-center">Paste your notes here</Card>
-        <Textarea
-          placeholder="Paste here"
-          rows={20}
-          value={notes}
-          onChange={(e) => {
-            setNotes(e.target.value);
-          }}
-        />
+        <CustomTextArea />
       </TabsContent>
       <TabsContent value="file">
         <Card className="py-5 mb-6 text-center">Attach a file</Card>
-        <Input type="file" />
+        <CustomFileInput />
       </TabsContent>
       <Button
         variant={'outline'}
