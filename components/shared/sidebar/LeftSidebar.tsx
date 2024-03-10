@@ -36,7 +36,7 @@ const SideBarContent = () => {
                 : "bg-transparent text-dark-300"
             } flex items-center justify-start gap-4 p-4`}
           >
-            <Image src={item.imgURL} alt={item.label} width={20} height={20} />
+            <Image src={item.imgURL} alt={item.label} width={20} height={20} className={`${isActive ? "invert" : "invert-0"}`} />
             <p
               className={`${
                 isActive ? "base-bold" : "base-medium"

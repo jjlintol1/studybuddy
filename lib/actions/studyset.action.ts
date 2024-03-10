@@ -131,3 +131,49 @@ export async function generateQuizQuestions(params: IGenerateQuizParams) {
     console.log(error);
   }
 }
+
+export async function getRecentStudySets() {
+    try {
+        const { data, error } = await supabase.from("study_set").select().order("created_at", { ascending: false }).limit(10);
+    
+        if (error) throw error;
+
+        console.log(data);
+
+        const studySetIds = data.map((item) => item.id);
+
+        const cardCount: number[] = [];
+
+        for (const id of studySetIds) {
+            const { data: cardData, error: cardError } = await supabase
+                .from("flashcard")
+                .select()
+                .eq("study_set_id", id);
+
+            if (cardError) throw cardError;
+            // console.log(cardData.length);
+            cardCount.push(cardData.length); 
+        }
+
+        console.log(cardCount.length);
+
+        const returnData = data.map((item, i) => ({
+            id: item.id,
+            name: item.name,
+            cards: cardCount[i],
+            // TODO: add real user data
+            author: {
+                name: "John Doe",
+                avatar: "/assets/images/avatar.png",
+            },
+        }));
+
+        console.log(returnData);
+    
+        return {
+            studySets: returnData,
+        };
+    } catch (error) {
+        console.log(error);
+    }
+}

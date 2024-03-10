@@ -22,7 +22,7 @@ export interface IParamsProps {
 
 const QuizPage = () => {
   const pathname = usePathname();
-  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [quizQuestions, setQuizQuestions] = useState<Array<any>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [answers, setAnswers] = useState<Array<any>>([{}]);
   const [checked, setChecked] = useState(false);
@@ -52,7 +52,7 @@ const QuizPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setChecked(true);
     for (let i = 0; i < quizQuestions.length; i++) {
-      if (answers[i]?.answer == quizQuestions[i]?.correct) {
+      if (answers[i]?.answer === quizQuestions[i]?.correct) {
         answers[i]?.element.classList.add("bg-primary-500");
         setScore((prev) => prev + 1);
       } else {
@@ -83,7 +83,7 @@ const QuizPage = () => {
   return (
     <>
       {checked ? (
-        <div className="w-full mt-6 flex justify-center items-center text-3xl">
+        <div className="mt-6 flex w-full items-center justify-center text-3xl">
           {"Score: " + 100 * (score / quizQuestions.length) + "%"}
         </div>
       ) : (
@@ -118,28 +118,28 @@ const QuizPage = () => {
                 <RadioGroup>
                   <div
                     // className={`flex items-center gap-2 ${answers[item.id]?.answer == item.correct ? "bg-green-100" : "bg-red-100"}`}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 rounded-xl p-2"
                     onClick={(e) => handleSelect(e)}
                   >
                     <RadioGroupItem value="a" id="a" />
                     <Label htmlFor="a">{item.options.a}</Label>
                   </div>
                   <div
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 rounded-xl p-2"
                     onClick={(e) => handleSelect(e)}
                   >
                     <RadioGroupItem value="b" id="b" />
                     <Label htmlFor="b">{item.options.b}</Label>
                   </div>
                   <div
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 rounded-xl p-2"
                     onClick={(e) => handleSelect(e)}
                   >
                     <RadioGroupItem value="c" id="c" />
                     <Label htmlFor="c">{item.options.c}</Label>
                   </div>
                   <div
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 rounded-xl p-2"
                     onClick={(e) => handleSelect(e)}
                   >
                     <RadioGroupItem value="d" id="d" />
@@ -150,8 +150,8 @@ const QuizPage = () => {
             </div>
           ))
         ) : isLoading ? (
-          <div className="w-full flex justify-center items-center mt-14 ">
-            <p className="paragraph-regular text-dark-200 text-2xl">
+          <div className="mt-14 flex w-full items-center justify-center ">
+            <p className="paragraph-regular text-2xl text-dark-200">
               Loading...
             </p>
           </div>

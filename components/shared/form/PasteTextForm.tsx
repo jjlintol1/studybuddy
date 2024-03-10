@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -55,8 +55,8 @@ const PasteTextForm = ({ userId }: IPasteTextFormProps) => {
   }
 
   return isLoading ? (
-    <div className="w-full flex justify-center items-center mt-14 ">
-      <p className="paragraph-regular text-dark-200 text-2xl">Loading...</p>
+    <div className="mt-14 flex w-full items-center justify-center ">
+      <p className="paragraph-regular text-2xl text-dark-200">Loading...</p>
     </div>
   ) : (
     <Form {...form}>
