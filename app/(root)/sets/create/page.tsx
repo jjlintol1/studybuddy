@@ -13,7 +13,7 @@ const CreatePage = async () => {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  // if (!user) redirect("/login");
   const userId = user?.id;
 
   return (
@@ -28,7 +28,7 @@ const CreatePage = async () => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="paste">
-        <PasteTextForm userId={userId || ""} />
+        <PasteTextForm userId={userId} />
       </TabsContent>
       <TabsContent value="file">
         <Card className="mb-6 py-5 text-center">Attach a file</Card>

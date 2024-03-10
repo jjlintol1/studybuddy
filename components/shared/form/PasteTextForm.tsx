@@ -25,7 +25,7 @@ const textFormSchema = z.object({
 });
 
 interface IPasteTextFormProps {
-  userId: string;
+  userId?: string;
 }
 
 const PasteTextForm = ({ userId }: IPasteTextFormProps) => {

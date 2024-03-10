@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { sidebarLinks } from "@/constants";
+import { createClient } from "@/lib/supabase/client";
 
 interface ISideBarContentProps {
   userId?: string;
@@ -64,13 +65,20 @@ interface ILeftSidebarProps {
 const LeftSidebar = ({
   userId
 }: ILeftSidebarProps) => {
+  const router = useRouter();
   return (
     <section className="custom-scrollbar light-border sticky left-0 top-0 flex h-screen w-fit flex-col justify-between overflow-y-auto rounded-xl border-r bg-light-900 p-6 pt-28 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
       <SideBarContent userId={userId} />
 
       <div className="flex flex-col gap-3">
         <Link href="/login">
-          <Button className="small-medium btn-secondary w-full rounded-lg px-4 py-3">
+          <Button className="small-medium btn-secondary w-full rounded-lg px-4 py-3" onClick={async () => {
+            const supabase = await createClient();
+
+            await supabase.auth.signOut();
+
+            router.push("/login");
+          }}>
             <Image
               src="/assets/icons/account.svg"
               alt="sign in"

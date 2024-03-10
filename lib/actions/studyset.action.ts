@@ -13,7 +13,7 @@ interface IUploadStudySetParams {
   name: string;
   path: string;
   notes: string;
-  userId: string;
+  userId?: string;
 }
 
 export async function uploadStudySet(params: IUploadStudySetParams) {
@@ -24,7 +24,7 @@ export async function uploadStudySet(params: IUploadStudySetParams) {
       .from("study_set")
       .insert({
         name,
-        user_id: userId
+        user_id: userId || null
       })
       .select();
 
@@ -162,7 +162,7 @@ export async function getRecentStudySets() {
 
             authorData = authorReturnData;
         } else {
-            authorData = [{ email: "johndoe@gmail.com" }];
+            authorData = [{ email: "guest@gmail.com" }];
         }
 
 
@@ -214,7 +214,7 @@ export async function getAllStudySets() {
 
             authorData = authorReturnData;
         } else {
-            authorData = [{ email: "johndoe@gmail.com" }];
+            authorData = [{ email: "guest@gmail.com" }];
         }
 
 
