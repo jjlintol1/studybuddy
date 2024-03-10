@@ -25,7 +25,7 @@ Notes: {notes}
 Flashcards:
 `;
 
-const quizTemplate = `Based on the notes I give you, create a quiz with questions in the following JSON format:
+const quizTemplate = `Based on the notes I give you, create a quiz with 10 questions in the following JSON format:
 [
 {{
     "question": "question text",
