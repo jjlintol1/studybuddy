@@ -29,10 +29,10 @@ const quizTemplate = `Based on the notes I give you, create a quiz with {questio
     "question": "question text",
     "correct": "a",
     "options": {{
-        "a": "option a",
-        "b": "option b",
-        "c": "option c",
-        "d": "option d"
+        "a": {{"option a"}},
+        "b": {{"option b"}},
+        "c": {{"option c"}},
+        "d": {{"option d"}},
     }}
 }},
 ...

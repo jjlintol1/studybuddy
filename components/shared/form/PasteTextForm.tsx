@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,13 +23,12 @@ const textFormSchema = z.object({
 });
 
 interface IPasteTextFormProps {
-    userId: string;
+  userId: string;
 }
 
-const PasteTextForm = ({
-    userId
-}: IPasteTextFormProps) => {
-    const router = useRouter();
+const PasteTextForm = ({ userId }: IPasteTextFormProps) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof textFormSchema>>({
     resolver: zodResolver(textFormSchema),
@@ -39,6 +38,7 @@ const PasteTextForm = ({
   });
 
   async function onSubmit(values: z.infer<typeof textFormSchema>) {
+    setIsLoading(true);
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     const { text } = values;
@@ -46,15 +46,19 @@ const PasteTextForm = ({
     // TODO: Create field to adjust term number
 
     const studySetId = await uploadStudySet({
-        notes: text,
-        name: "Study Set Example",
-        path: "/sets"
+      notes: text,
+      name: "Study Set Example",
+      path: "/sets",
     });
 
     router.push(`/sets/${studySetId}`);
   }
 
-  return (
+  return isLoading ? (
+    <div className="w-full flex justify-center items-center mt-14 ">
+      <p className="paragraph-regular text-dark-200 text-2xl">Loading...</p>
+    </div>
+  ) : (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
@@ -76,22 +80,6 @@ const PasteTextForm = ({
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={form.control}
-          name="numberOfTerms"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="paragraph-semibold text-dark-400">
-                Number of questions
-              </FormLabel>
-              <FormControl>
-                <Input type="number" {...field} />
-              </FormControl>
-              
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         <Button
           variant={"outline"}
           className="mt-6 w-[300px] self-center border-2 border-black hover:border-primary-500"

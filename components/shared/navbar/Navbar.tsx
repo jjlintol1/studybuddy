@@ -1,9 +1,9 @@
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-import GlobalSearchBar from '../GlobalSearchBar';
-import MobileNavbar from './MobileNavbar';
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import GlobalSearchBar from "../GlobalSearchBar";
+import MobileNavbar from "./MobileNavbar";
 
 const Navbar = () => {
   return (
@@ -14,7 +14,7 @@ const Navbar = () => {
         </p>
       </Link>
       <GlobalSearchBar />
-      <Link href="./create">
+      <Link href="/sets/create">
         <Button className="flex min-w-[156px] gap-2 rounded-xl bg-primary-500 text-dark-100 max-sm:hidden">
           <Image
             src="/assets/icons/stars.svg"

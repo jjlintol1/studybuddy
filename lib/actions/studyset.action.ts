@@ -2,7 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { supabase } from "../supabase/utils";
-import { quizChain, splitter, studySetChain } from "../langchain/createStudySet";
+import {
+  quizChain,
+  splitter,
+  studySetChain,
+} from "../langchain/createStudySet";
 import { formatDocuments } from "../utils";
 
 interface IUploadStudySetParams {
@@ -28,9 +32,12 @@ export async function uploadStudySet(params: IUploadStudySetParams) {
 
     const docs = await splitter.createDocuments([notes]);
 
-    const { error: documentError } = await supabase
-      .from("document")
-      .insert(docs.map((doc) => ({ content: doc.pageContent, study_set_id: studySetId })));
+    const { error: documentError } = await supabase.from("document").insert(
+      docs.map((doc) => ({
+        content: doc.pageContent,
+        study_set_id: studySetId,
+      })),
+    );
 
     if (documentError) throw documentError;
 
@@ -41,13 +48,12 @@ export async function uploadStudySet(params: IUploadStudySetParams) {
 
     const flashcards = JSON.parse(output);
 
-    const flashcardData = flashcards.map((flashcard: {
-        term: string;
-        definition: string;
-    }) => ({
-      ...flashcard,
-      study_set_id: studySetId,
-    }));
+    const flashcardData = flashcards.map(
+      (flashcard: { term: string; definition: string }) => ({
+        ...flashcard,
+        study_set_id: studySetId,
+      }),
+    );
 
     const { error: flashcardError } = await supabase
       .from("flashcard")
@@ -96,34 +102,32 @@ export async function getStudySet(params: IGetStudySetParams) {
 }
 
 interface IGenerateQuizParams {
-    studySetId: number;
+  studySetId: number;
 }
 
 export async function generateQuizQuestions(params: IGenerateQuizParams) {
-    try {
-        const { studySetId } = params;
+  try {
+    const { studySetId } = params;
 
-        const { data, error } = await supabase
-            .from("document")
-            .select("content")
-            .eq("study_set_id", studySetId);
-        
-        if (error) throw error;
+    const { data, error } = await supabase
+      .from("document")
+      .select("content")
+      .eq("study_set_id", studySetId);
 
-        const documentContent = formatDocuments(data.map((doc) => doc.content));
+    if (error) throw error;
 
-        const output = await quizChain.invoke({
-            notes: documentContent,
-            questionCount: "10",
-        });
-        console.log(output);
+    const documentContent = formatDocuments(data.map((doc) => doc.content));
 
-        return {
-            questions: JSON.parse(output),
-        };
-    } catch (error) {
-        console.log(error);
-    }
+    const output = await quizChain.invoke({
+      notes: documentContent,
+      questionCount: "10",
+    });
+    console.log(output);
+
+    return {
+      questions: JSON.parse(output),
+    };
+  } catch (error) {
+    console.log(error);
+  }
 }
-
-

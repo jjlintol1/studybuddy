@@ -19,17 +19,15 @@ const SetPage = async ({ params }: IParamsProps) => {
       <div className="flex flex-col gap-2 md:flex-row md:justify-between">
         <h1 className="h1-bold text-dark-100">{data?.name}</h1>
         <Link href={`/sets/${params.id}/quiz`}>
-        <Button
-          className="flex w-[200px] gap-2 rounded-xl bg-primary-500 text-dark-100"
-        >
-          <Image
-            src="/assets/icons/stars.svg"
-            width={20}
-            height={20}
-            alt="stars"
-          />
-          <p className="paragraph-medium">Generate Quiz</p>
-        </Button>
+          <Button className="flex w-[200px] gap-2 rounded-xl bg-primary-500 text-dark-100">
+            <Image
+              src="/assets/icons/stars.svg"
+              width={20}
+              height={20}
+              alt="stars"
+            />
+            <p className="paragraph-medium">Generate Quiz</p>
+          </Button>
         </Link>
       </div>
       <CardsSliderCarousel cards={data?.flashcards || []} />

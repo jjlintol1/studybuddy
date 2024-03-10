@@ -2,135 +2,39 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { generateQuizQuestions } from "@/lib/actions/studyset.action";
-import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { usePathname } from "next/navigation";
 
-const dummyData = [
-  {
-    question: "What is the capital of France?",
-    options: {
-      a: {
-        text: "Berlin",
-        correct: false,
-      },
-      b: {
-        text: "Madrid",
-        correct: false,
-      },
-      c: {
-        text: "Paris",
-        correct: true,
-      },
-      d: {
-        text: "Rome",
-        correct: false,
-      },
-    },
-  },
-  {
-    question: "Which planet is known as the Red Planet?",
-    options: {
-      a: {
-        text: "Venus",
-        correct: false,
-      },
-      b: {
-        text: "Mars",
-        correct: true,
-      },
-      c: {
-        text: "Jupiter",
-        correct: false,
-      },
-      d: {
-        text: "Saturn",
-        correct: false,
-      },
-    },
-  },
-  {
-    question: "In what year did Christopher Columbus reach the Americas?",
-    options: {
-      a: {
-        text: "1492",
-        correct: true,
-      },
-      b: {
-        text: "1510",
-        correct: false,
-      },
-      c: {
-        text: "1607",
-        correct: false,
-      },
-      d: {
-        text: "1776",
-        correct: false,
-      },
-    },
-  },
-  {
-    question: "What is the largest mammal in the world?",
-    options: {
-      a: {
-        text: "Elephant",
-        correct: false,
-      },
-      b: {
-        text: "Blue Whale",
-        correct: true,
-      },
-      c: {
-        text: "Giraffe",
-        correct: false,
-      },
-      d: {
-        text: "Hippopotamus",
-        correct: false,
-      },
-    },
-  },
-  {
-    question: "Which programming language is often used for web development?",
-    options: {
-      a: {
-        text: "Python",
-        correct: false,
-      },
-      b: {
-        text: "Java",
-        correct: false,
-      },
-      c: {
-        text: "JavaScript",
-        correct: true,
-      },
-      d: {
-        text: "C++",
-        correct: false,
-      },
-    },
-  },
-];
+function extractIntegerFromPathname(pathname: string) {
+  const parts = pathname.split("/");
 
-console.log(dummyData);
+  // Check if the last part of the path could be an integer
+  return parts[parts.length - 2];
+}
 
 export interface IParamsProps {
   params: { id: string };
 }
 
-const QuizPage = ({ params }: IParamsProps) => {
-  const [quizQuestions, setQuizQuestions] = useState(dummyData);
+const QuizPage = () => {
+  const pathname = usePathname();
+  const [quizQuestions, setQuizQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [answers, setAnswers] = useState<Array<any>>([{}]);
+  const [checked, setChecked] = useState(false);
+  const [score, setScore] = useState(0);
 
   const generateQuestions = async () => {
     setIsLoading(true);
+    setQuizQuestions([]);
+    setChecked(false);
+    setScore(0);
     const response = await generateQuizQuestions({
-      studySetId: parseInt(params.id),
+      studySetId: parseInt(extractIntegerFromPathname(pathname)),
     });
     if (response) {
       setQuizQuestions(response.questions);
@@ -140,19 +44,58 @@ const QuizPage = ({ params }: IParamsProps) => {
     setIsLoading(false);
   };
 
-  const checkAnswers = () => {
+  useEffect(() => {
+    generateQuestions();
+  }, []);
 
-  }
+  const checkAnswers = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setChecked(true);
+    for (let i = 0; i < quizQuestions.length; i++) {
+      if (answers[i]?.answer == quizQuestions[i]?.correct) {
+        answers[i]?.element.classList.add("bg-primary-500");
+        setScore((prev) => prev + 1);
+      } else {
+        answers[i]?.element.classList.add("bg-red-500");
+      }
+    }
+  };
+
+  // label
+  // button
+  const handleSelect = (e: any) => {
+    const root =
+      e.target.parentElement.parentElement.parentElement.parentElement;
+
+    const newArray = answers;
+    newArray[root.id] = {
+      question: root.children[0].innerText,
+      answer: e.target.id,
+      element: e.target.parentElement,
+    };
+    if (e.target.tagName === "LABEL") {
+      return;
+    }
+
+    setAnswers(newArray);
+  };
 
   return (
     <>
+      {checked ? (
+        <div className="w-full mt-6 flex justify-center items-center text-3xl">
+          {"Score: " + 100 * (score / quizQuestions.length) + "%"}
+        </div>
+      ) : (
+        <></>
+      )}
       <h1 className="h1-bold">Generate a quiz</h1>
       <p className="paragraph-regular mt-3">
         Click the button below to test your knowledge.
       </p>
       <Button
         className="mt-4 flex w-[200px] gap-2 rounded-xl bg-primary-500 text-dark-100"
-        onClick={generateQuestions}
+        onClick={() => generateQuestions()}
       >
         <Image
           src="/assets/icons/stars.svg"
@@ -167,34 +110,50 @@ const QuizPage = ({ params }: IParamsProps) => {
           quizQuestions.map((item: any, i) => (
             <div
               key={i}
-              className="card-wrapper flex w-full flex-col gap-5 rounded-xl p-6"
+              id={i.toString()}
+              className="card-wrapper flex w-full flex-col gap-5 rounded-xl p-6 "
             >
               <h4 className="base-medium">{item.question}</h4>
               <div className="flex flex-col gap-3">
                 <RadioGroup>
-                  <div className="flex items-center gap-2">
+                  <div
+                    // className={`flex items-center gap-2 ${answers[item.id]?.answer == item.correct ? "bg-green-100" : "bg-red-100"}`}
+                    className="flex items-center gap-2"
+                    onClick={(e) => handleSelect(e)}
+                  >
                     <RadioGroupItem value="a" id="a" />
-                    <Label htmlFor="a">{item.options.a.text}</Label>
+                    <Label htmlFor="a">{item.options.a}</Label>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div
+                    className="flex items-center gap-2"
+                    onClick={(e) => handleSelect(e)}
+                  >
                     <RadioGroupItem value="b" id="b" />
-                    <Label htmlFor="b">{item.options.b.text}</Label>
+                    <Label htmlFor="b">{item.options.b}</Label>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div
+                    className="flex items-center gap-2"
+                    onClick={(e) => handleSelect(e)}
+                  >
                     <RadioGroupItem value="c" id="c" />
-                    <Label htmlFor="c">{item.options.c.text}</Label>
+                    <Label htmlFor="c">{item.options.c}</Label>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div
+                    className="flex items-center gap-2"
+                    onClick={(e) => handleSelect(e)}
+                  >
                     <RadioGroupItem value="d" id="d" />
-                    <Label htmlFor="d">{item.options.d.text}</Label>
+                    <Label htmlFor="d">{item.options.d}</Label>
                   </div>
                 </RadioGroup>
               </div>
             </div>
           ))
         ) : isLoading ? (
-          <div>
-            <p className="paragraph-regular text-dark-200">Loading...</p>
+          <div className="w-full flex justify-center items-center mt-14 ">
+            <p className="paragraph-regular text-dark-200 text-2xl">
+              Loading...
+            </p>
           </div>
         ) : (
           <div>
@@ -204,14 +163,20 @@ const QuizPage = ({ params }: IParamsProps) => {
           </div>
         )}
       </div>
-      <div>
-        <Button
-          className="mt-6 flex w-[200px] gap-2 rounded-xl bg-primary-500 text-dark-100"
-          onClick={checkAnswers}
-        >
-          <p className="paragraph-medium">Check answers</p>
-        </Button>
-      </div>
+      {checked && isLoading ? (
+        <></>
+      ) : isLoading ? (
+        <></>
+      ) : (
+        <div>
+          <Button
+            className="mt-6 flex w-[200px] gap-2 rounded-xl bg-primary-500 text-dark-100"
+            onClick={() => checkAnswers()}
+          >
+            <p className="paragraph-medium">Check Answers</p>
+          </Button>
+        </div>
+      )}
     </>
   );
 };
