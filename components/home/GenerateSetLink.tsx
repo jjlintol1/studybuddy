@@ -7,7 +7,7 @@ const GenerateSetLink = () => {
   return (
     <div className="mt-10 w-full">
     <h2 className="h2-semibold text-dark-200">Generate a set using AI</h2>
-    <Link href="/create">
+    <Link href="/sets/create">
       <div className="card-wrapper mt-6 w-full rounded-xl p-6">
         <p className="paragraph-regular text-dark-500">Paste notes</p>
         <p className="small-regular mt-2">or</p>
