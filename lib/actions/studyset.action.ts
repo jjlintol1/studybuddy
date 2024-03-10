@@ -13,16 +13,18 @@ interface IUploadStudySetParams {
   name: string;
   path: string;
   notes: string;
+  userId: string;
 }
 
 export async function uploadStudySet(params: IUploadStudySetParams) {
   try {
-    const { name, path, notes } = params;
+    const { name, path, notes, userId } = params;
 
     const { data, error } = await supabase
       .from("study_set")
       .insert({
         name,
+        user_id: userId
       })
       .select();
 
@@ -138,7 +140,57 @@ export async function getRecentStudySets() {
     
         if (error) throw error;
 
-        console.log(data);
+        const studySetIds = data.map((item) => item.id);
+
+        const cardCount: number[] = [];
+
+        for (const id of studySetIds) {
+            const { data: cardData, error: cardError } = await supabase
+                .from("flashcard")
+                .select()
+                .eq("study_set_id", id);
+
+            if (cardError) throw cardError;
+            // console.log(cardData.length);
+            cardCount.push(cardData.length); 
+        }
+
+        let authorData: any[];
+
+        if (data[0].user_id) {
+            const { data: authorReturnData, error: authorError } = await supabase.from("users").select("uuid, email").eq("uuid", data[0].user_id);
+    
+            if (authorError) throw authorError;
+
+            authorData = authorReturnData;
+        } else {
+            authorData = [{ email: "johndoe@gmail.com" }];
+        }
+
+
+        const returnData = data.map((item, i) => ({
+            id: item.id,
+            name: item.name,
+            cards: cardCount[i],
+            author: {
+                name: authorData[0].email.split("@")[0] || "John Doe",
+                avatar: "/assets/images/avatar.png",
+            },
+        }));
+    
+        return {
+            studySets: returnData,
+        };
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getAllStudySets() {
+    try {
+        const { data, error } = await supabase.from("study_set").select().order("created_at", { ascending: false });
+    
+        if (error) throw error;
 
         const studySetIds = data.map((item) => item.id);
 
@@ -155,20 +207,29 @@ export async function getRecentStudySets() {
             cardCount.push(cardData.length); 
         }
 
-        console.log(cardCount.length);
+        let authorData: any[];
+
+        if (data[0].user_id) {
+            const { data: authorReturnData, error: authorError } = await supabase.from("users").select("uuid, email").eq("uuid", data[0].user_id);
+    
+            if (authorError) throw authorError;
+
+            authorData = authorReturnData;
+        } else {
+            authorData = [{ email: "johndoe@gmail.com" }];
+        }
+
 
         const returnData = data.map((item, i) => ({
             id: item.id,
             name: item.name,
             cards: cardCount[i],
-            // TODO: add real user data
+            userId: item.user_id || "",
             author: {
-                name: "John Doe",
+                name: authorData[0].email.split("@")[0] || "John Doe",
                 avatar: "/assets/images/avatar.png",
             },
         }));
-
-        console.log(returnData);
     
         return {
             studySets: returnData,

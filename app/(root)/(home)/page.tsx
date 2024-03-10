@@ -2,6 +2,7 @@ import GenerateSetLink from "@/components/home/GenerateSetLink";
 import StudySetCarousel from "@/components/shared/carousel/StudySetCarousel";
 import UserCarousel from "@/components/shared/carousel/UserCarousel";
 import { getRecentStudySets } from "@/lib/actions/studyset.action";
+import { getAllUsers } from "@/lib/actions/user.action";
 // import { createClient } from "@/lib/supabase/server";
 // import { redirect } from "next/navigation";
 
@@ -46,39 +47,6 @@ import React from "react";
 //   },
 // ];
 
-const dummyUsers = [
-  {
-    id: 1,
-    avatar: "/assets/images/avatar.png",
-    username: "johndoe21",
-    sets: 10,
-  },
-  {
-    id: 2,
-    avatar: "/assets/images/avatar.png",
-    username: "johndoe21",
-    sets: 10,
-  },
-  {
-    id: 3,
-    avatar: "/assets/images/avatar.png",
-    username: "johndoe21",
-    sets: 10,
-  },
-  {
-    id: 4,
-    avatar: "/assets/images/avatar.png",
-    username: "johndoe21",
-    sets: 10,
-  },
-  {
-    id: 5,
-    avatar: "/assets/images/avatar.png",
-    username: "johndoe21",
-    sets: 10,
-  },
-];
-
 const HomePage = async () => {
   // const supabase = createClient();
 
@@ -89,15 +57,18 @@ const HomePage = async () => {
   // if (!user) {
   //   return redirect("/login");
   // }
-
   const result = await getRecentStudySets();
+
+  const userData = await getAllUsers();
+
+  console.log("users", userData);
 
   return (
     <>
       <StudySetCarousel title="Your Sets" sets={result?.studySets || []} isTop />
       <GenerateSetLink />
       <StudySetCarousel title="Trending Sets" sets={result?.studySets || []} isTop={false} />
-      <UserCarousel users={dummyUsers} />
+      <UserCarousel users={userData || []} />
     </>
   );
 };

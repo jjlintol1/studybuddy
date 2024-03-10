@@ -16,8 +16,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { uploadStudySet } from "@/lib/actions/studyset.action";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 const textFormSchema = z.object({
+  name: z.string(),
   text: z.string(),
   //   numberOfTerms: z.number().optional(),
 });
@@ -33,6 +35,7 @@ const PasteTextForm = ({ userId }: IPasteTextFormProps) => {
   const form = useForm<z.infer<typeof textFormSchema>>({
     resolver: zodResolver(textFormSchema),
     defaultValues: {
+      name: "",
       text: "",
     },
   });
@@ -41,14 +44,15 @@ const PasteTextForm = ({ userId }: IPasteTextFormProps) => {
     setIsLoading(true);
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    const { text } = values;
+    const { name, text } = values;
 
     // TODO: Create field to adjust term number
 
     const studySetId = await uploadStudySet({
       notes: text,
-      name: "Study Set Example",
+      name,
       path: "/sets",
+      userId,
     });
 
     router.push(`/sets/${studySetId}`);
@@ -64,6 +68,23 @@ const PasteTextForm = ({ userId }: IPasteTextFormProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6"
       >
+        
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="paragraph-semibold text-dark-400">
+                Name your study set{" "}
+                <span className="text-orange-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="Study set name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="text"

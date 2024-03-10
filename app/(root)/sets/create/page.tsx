@@ -7,10 +7,13 @@ import CustomFileInput from '@/components/shared/formcomponents/CustomFileInput'
 import PasteTextForm from '@/components/shared/form/PasteTextForm';
 
 import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 const CreatePage = async () => {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
   const userId = user?.id;
 
   return (

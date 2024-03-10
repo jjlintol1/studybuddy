@@ -13,7 +13,13 @@ import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { sidebarLinks } from "@/constants";
 
-const NavContent = () => {
+interface INavContentProps {
+  userId?: string;
+}
+
+const NavContent = ({
+  userId
+}: INavContentProps) => {
   const pathname = usePathname();
   return (
     <section className="flex h-full flex-col gap-6 pt-16">
@@ -21,6 +27,14 @@ const NavContent = () => {
         const isActive =
           (pathname.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;
+
+        if (item.route === "/profile") {
+          if (userId) {
+            item.route = `${item.route}/${userId}`;
+          } else {
+            return null;
+          }
+        }
 
         return (
           <SheetClose asChild key={item.route}>
@@ -49,7 +63,9 @@ const NavContent = () => {
   );
 };
 
-const MobileNavbar = () => {
+const MobileNavbar = ({
+  userId
+}: INavContentProps) => {
   return (
     <Sheet>
       <SheetTrigger asChild>

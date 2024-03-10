@@ -5,7 +5,11 @@ import React from "react";
 import GlobalSearchBar from "../GlobalSearchBar";
 import MobileNavbar from "./MobileNavbar";
 
-const Navbar = () => {
+const Navbar = ({
+  userId,
+}: {
+  userId?: string;
+}) => {
   return (
     <nav className="fixed z-50 flex min-h-[80px] w-full items-center justify-between bg-light-900 px-6 sm:px-14 lg:min-h-[100px]">
       <Link href="/" className="flex items-center gap-3">
@@ -37,7 +41,7 @@ const Navbar = () => {
             alt="notification"
           />
         </Button>
-        <MobileNavbar />
+        <MobileNavbar userId={userId} />
       </div>
     </nav>
   );
