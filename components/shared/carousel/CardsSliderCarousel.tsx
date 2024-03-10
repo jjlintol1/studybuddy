@@ -24,9 +24,12 @@ interface ICardsSliderCarouselProps {
 
 const CardsSliderCarousel = ({ cards }: ICardsSliderCarouselProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  
+
   return (
-    <div>
+    <div className="mt-10">
+      <p className="paragraph-regular text-dark-200">
+        Click the flashcards to view the definition.
+      </p>
       <Swiper
         navigation={true}
         direction="horizontal"
@@ -37,11 +40,10 @@ const CardsSliderCarousel = ({ cards }: ICardsSliderCarouselProps) => {
           enabled: true,
         }}
         modules={[Keyboard, Pagination, Navigation]}
-        className="mt-10"
+        className="mt-2"
         spaceBetween={50}
         slidesPerView={1}
         onSlideChange={(swiper) => {
-          console.log("slide change", swiper.activeIndex);
           setCurrentSlide(swiper.activeIndex);
         }}
         onSwiper={(swiper) => console.log(swiper)}
@@ -53,7 +55,10 @@ const CardsSliderCarousel = ({ cards }: ICardsSliderCarouselProps) => {
         ))}
       </Swiper>
       <div className="mt-6 flex w-full flex-col items-center">
-        <Progress value={Math.round(((currentSlide + 1) / cards.length) * 100)} className="w-full bg-light-700 fill-primary-500" />
+        <Progress
+          value={Math.round(((currentSlide + 1) / cards.length) * 100)}
+          className="w-full bg-light-700 fill-primary-500"
+        />
         <Badge className="mt-4 bg-light-850">
           <p className="base-medium">
             {currentSlide + 1} / {cards.length}
