@@ -24,7 +24,7 @@ export async function uploadStudySet(params: IUploadStudySetParams) {
       .from("study_set")
       .insert({
         name,
-        user_id: userId || null
+        user_id: userId || null,
       })
       .select();
 
@@ -38,7 +38,7 @@ export async function uploadStudySet(params: IUploadStudySetParams) {
       docs.map((doc) => ({
         content: doc.pageContent,
         study_set_id: studySetId,
-      })),
+      }))
     );
 
     if (documentError) throw documentError;
@@ -53,7 +53,7 @@ export async function uploadStudySet(params: IUploadStudySetParams) {
       (flashcard: { term: string; definition: string }) => ({
         ...flashcard,
         study_set_id: studySetId,
-      }),
+      })
     );
 
     const { error: flashcardError } = await supabase
@@ -133,106 +133,132 @@ export async function generateQuizQuestions(params: IGenerateQuizParams) {
 }
 
 export async function getRecentStudySets() {
-    try {
-        const { data, error } = await supabase.from("study_set").select().order("created_at", { ascending: false }).limit(10);
-    
-        if (error) throw error;
+  try {
+    const { data, error } = await supabase
+      .from("study_set")
+      .select()
+      .order("created_at", { ascending: false })
+      .limit(10);
 
-        const studySetIds = data.map((item) => item.id);
+    if (error) throw error;
 
-        const cardCount: number[] = [];
+    const studySetIds = data.map((item) => item.id);
 
-        for (const id of studySetIds) {
-            const { data: cardData, error: cardError } = await supabase
-                .from("flashcard")
-                .select()
-                .eq("study_set_id", id);
+    const cardCount: number[] = [];
 
-            if (cardError) throw cardError;
-            // console.log(cardData.length);
-            cardCount.push(cardData.length); 
-        }
+    for (const id of studySetIds) {
+      const { data: cardData, error: cardError } = await supabase
+        .from("flashcard")
+        .select()
+        .eq("study_set_id", id);
 
-        let authorData: any[];
-
-        if (data[0].user_id) {
-            const { data: authorReturnData, error: authorError } = await supabase.from("users").select("uuid, email").eq("uuid", data[0].user_id);
-    
-            if (authorError) throw authorError;
-
-            authorData = authorReturnData;
-        } else {
-            authorData = [{ email: "guest@gmail.com" }];
-        }
-
-
-        const returnData = data.map((item, i) => ({
-            id: item.id,
-            name: item.name,
-            cards: cardCount[i],
-            author: {
-                name: authorData[0].email.split("@")[0] || "John Doe",
-                avatar: "/assets/images/avatar.png",
-            },
-        }));
-    
-        return {
-            studySets: returnData,
-        };
-    } catch (error) {
-        console.log(error);
+      if (cardError) throw cardError;
+      // console.log(cardData.length);
+      cardCount.push(cardData.length);
     }
+
+    const authorData: any[] = [];
+
+    for (const item of data) {
+      if (item.user_id) {
+        const { data: authorReturnData, error: authorError } = await supabase
+          .from("users")
+          .select("uuid, email")
+          .eq("uuid", item.user_id);
+
+        if (authorError) throw authorError;
+
+        if (authorReturnData.length > 0) {
+            authorData.push(authorReturnData[0]);
+        } else {
+            authorData.push({ email: "guest@gmail.com" });
+        }
+
+      } else {
+        authorData.push({ email: "guest@gmail.com" });
+      }
+    }
+
+    const returnData = data.map((item, i) => ({
+      id: item.id,
+      name: item.name,
+      cards: cardCount[i],
+      userId: item.user_id || "",
+      author: {
+        name: authorData[i].email.split("@")[0] || "John Doe",
+        avatar: "/assets/images/avatar.png",
+      },
+    }));
+
+    return {
+      studySets: returnData,
+    };
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function getAllStudySets() {
-    try {
-        const { data, error } = await supabase.from("study_set").select().order("created_at", { ascending: false });
-    
-        if (error) throw error;
+  try {
+    const { data, error } = await supabase
+      .from("study_set")
+      .select()
+      .order("created_at", { ascending: false });
 
-        const studySetIds = data.map((item) => item.id);
+    if (error) throw error;
 
-        const cardCount: number[] = [];
+    const studySetIds = data.map((item) => item.id);
 
-        for (const id of studySetIds) {
-            const { data: cardData, error: cardError } = await supabase
-                .from("flashcard")
-                .select()
-                .eq("study_set_id", id);
+    const cardCount: number[] = [];
 
-            if (cardError) throw cardError;
-            // console.log(cardData.length);
-            cardCount.push(cardData.length); 
-        }
+    for (const id of studySetIds) {
+      const { data: cardData, error: cardError } = await supabase
+        .from("flashcard")
+        .select()
+        .eq("study_set_id", id);
 
-        let authorData: any[];
-
-        if (data[0].user_id) {
-            const { data: authorReturnData, error: authorError } = await supabase.from("users").select("uuid, email").eq("uuid", data[0].user_id);
-    
-            if (authorError) throw authorError;
-
-            authorData = authorReturnData;
-        } else {
-            authorData = [{ email: "guest@gmail.com" }];
-        }
-
-
-        const returnData = data.map((item, i) => ({
-            id: item.id,
-            name: item.name,
-            cards: cardCount[i],
-            userId: item.user_id || "",
-            author: {
-                name: authorData[0].email.split("@")[0] || "John Doe",
-                avatar: "/assets/images/avatar.png",
-            },
-        }));
-    
-        return {
-            studySets: returnData,
-        };
-    } catch (error) {
-        console.log(error);
+      if (cardError) throw cardError;
+      // console.log(cardData.length);
+      cardCount.push(cardData.length);
     }
+
+    const authorData: any[] = [];
+
+    for (const item of data) {
+        if (item.user_id) {
+          const { data: authorReturnData, error: authorError } = await supabase
+            .from("users")
+            .select("uuid, email")
+            .eq("uuid", item.user_id);
+  
+          if (authorError) throw authorError;
+  
+          if (authorReturnData.length > 0) {
+              authorData.push(authorReturnData[0]);
+          } else {
+              authorData.push({ email: "guest@gmail.com" });
+          }
+  
+        } else {
+          authorData.push({ email: "guest@gmail.com" });
+        }
+      }
+
+    const returnData = data.map((item, i) => ({
+      id: item.id,
+      name: item.name,
+      cards: cardCount[i],
+      userId: item.user_id || "",
+      author: {
+        name: authorData[i].email.split("@")[0] || "John Doe",
+        avatar: "/assets/images/avatar.png",
+      },
+    }));
+
+    return {
+      studySets: returnData,
+    };
+  } catch (error) {
+    console.log(error);
+  }
 }
