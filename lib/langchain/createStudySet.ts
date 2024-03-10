@@ -7,11 +7,13 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 const openAIApiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
-const llm = new ChatOpenAI({ openAIApiKey });
+const llm = new ChatOpenAI({ 
+    openAIApiKey,
+});
 
 const parser = new StringOutputParser();
 
-const studySetTemplate = `Based on the notes I give you, create a list of {cardCount} flashcards in the following JSON format:
+const studySetTemplate = `Based on the notes I give you, create a list of 20 flashcards in the following JSON format:
 [
 {{
     "term": "term text",
@@ -23,7 +25,7 @@ Notes: {notes}
 Flashcards:
 `;
 
-const quizTemplate = `Based on the notes I give you, create a quiz with {questionCount} questions in the following JSON format:
+const quizTemplate = `Based on the notes I give you, create a quiz with questions in the following JSON format:
 [
 {{
     "question": "question text",

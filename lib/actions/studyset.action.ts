@@ -44,7 +44,6 @@ export async function uploadStudySet(params: IUploadStudySetParams) {
     if (documentError) throw documentError;
 
     const output = await studySetChain.invoke({
-      cardCount: "20",
       notes,
     });
 
@@ -122,7 +121,6 @@ export async function generateQuizQuestions(params: IGenerateQuizParams) {
 
     const output = await quizChain.invoke({
       notes: documentContent,
-      questionCount: "10",
     });
     console.log(output);
 
