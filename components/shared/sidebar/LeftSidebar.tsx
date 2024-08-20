@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { sidebarLinks } from "@/constants";
-import { createClient } from "@/lib/supabase/client";
+// import { createClient } from "@/lib/supabase/client";
 import { SignOutButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { RiAccountCircleFill } from "@remixicon/react";
 
@@ -69,7 +69,7 @@ interface ILeftSidebarProps {
 }
 
 const LeftSidebar = ({ userId }: ILeftSidebarProps) => {
-  const router = useRouter();
+  // const router = useRouter();
   return (
     <section className="custom-scrollbar light-border sticky left-0 top-0 flex h-screen w-fit flex-col justify-between overflow-y-auto rounded-xl border-r bg-light-900 p-6 pt-28 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
       <SideBarContent userId={userId} />
