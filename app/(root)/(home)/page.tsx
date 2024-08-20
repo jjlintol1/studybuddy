@@ -2,7 +2,7 @@ import GenerateSetLink from "@/components/home/GenerateSetLink";
 import StudySetCarousel from "@/components/shared/carousel/StudySetCarousel";
 import UserCarousel from "@/components/shared/carousel/UserCarousel";
 import { getRecentStudySets } from "@/lib/actions/studyset.action";
-import { getAllUsers } from "@/lib/actions/user.action";
+// import { getAllUsers } from "@/lib/actions/user.action";
 // import { createClient } from "@/lib/supabase/server";
 // import { redirect } from "next/navigation";
 
