@@ -13,7 +13,7 @@ const llm = new ChatOpenAI({
 
 const parser = new StringOutputParser();
 
-const studySetTemplate = `Based on the notes I give you, create a list of flashcards in the following JSON format:
+const studySetTemplate = `Based on the notes I give you, create a list of flashcards in a JSON string in the following format:
 [
 {{
     "term": "term text",
@@ -25,7 +25,7 @@ Notes: {notes}
 Flashcards:
 `;
 
-const quizTemplate = `Based on the notes I give you, create a quiz with questions in the following JSON format:
+const quizTemplate = `Based on the notes I give you, create a quiz with questions in a JSON string in the following format:
 [
 {{
     "question": "question text",

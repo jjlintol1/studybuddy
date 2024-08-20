@@ -47,6 +47,8 @@ export async function uploadStudySet(params: IUploadStudySetParams) {
       notes,
     });
 
+    console.log(output);
+
     const flashcards = JSON.parse(output);
 
     const flashcardData = flashcards.map(

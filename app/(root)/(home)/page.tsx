@@ -59,16 +59,16 @@ const HomePage = async () => {
   // }
   const result = await getRecentStudySets();
 
-  const userData = await getAllUsers();
+  // const userData = await getAllUsers();
 
-  console.log("users", userData);
+  // console.log("users", userData);
 
   return (
     <>
       <StudySetCarousel title="Your Sets" sets={result?.studySets || []} isTop />
       <GenerateSetLink />
       <StudySetCarousel title="Trending Sets" sets={result?.studySets || []} isTop={false} />
-      <UserCarousel users={userData || []} />
+      <UserCarousel users={[]} />
     </>
   );
 };
